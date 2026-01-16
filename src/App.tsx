@@ -15,6 +15,7 @@ import NewsPage from './pages/NewsPage';
 import NewsDetailPage from './pages/NewsDetailPage';
 import MembersPage from './pages/MembersPage';
 import ContactPage from './pages/ContactPage';
+import LoyaltyCardPage from './pages/LoyaltyCardPage';
 
 function App() {
   const [activeSection, setActiveSection] = useState('home');
@@ -106,6 +107,7 @@ function App() {
           }
         />
         <Route path="/join" element={<JoinPage />} />
+        <Route path="/loyalty-card" element={<LoyaltyCardPage />} />
         <Route path="/events" element={<EventsOverviewPage />} />
         <Route path="/nos-evenements-prevus" element={<EventsOverviewPage />} />
         <Route path="/events/:eventSlug" element={<EventDetailPage />} />

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Menu, X } from 'lucide-react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import logo from '../assets/adhel-logo.png';
+import { getCookie } from '../utils/cookieUtils';
 
 interface HeaderProps {
   activeSection: string;
@@ -13,6 +14,7 @@ function Header({ activeSection, setActiveSection }: HeaderProps) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
+  const isMember = !!getCookie('adhel_member');
 
   useEffect(() => {
     const handleScroll = () => {
@@ -74,9 +76,8 @@ function Header({ activeSection, setActiveSection }: HeaderProps) {
 
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled ? 'bg-white shadow-md' : 'bg-transparent'
-      }`}
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled ? 'bg-white shadow-md' : 'bg-transparent'
+        }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center py-4">
@@ -88,9 +89,8 @@ function Header({ activeSection, setActiveSection }: HeaderProps) {
             <img
               src={logo}
               alt="ADHEL"
-              className={`h-10 w-10 rounded-lg border border-emerald-100 bg-white/80 p-1 ${
-                isScrolled ? '' : 'shadow-lg'
-              }`}
+              className={`h-10 w-10 rounded-lg border border-emerald-100 bg-white/80 p-1 ${isScrolled ? '' : 'shadow-lg'
+                }`}
             />
             <span className={`text-2xl font-bold ${isScrolled ? 'text-gray-900' : 'text-white'}`}>
               ADHEL
@@ -103,24 +103,20 @@ function Header({ activeSection, setActiveSection }: HeaderProps) {
                 {item.type === 'section' ? (
                   <button
                     onClick={() => handleSectionNav(item.sectionId)}
-                    className={`text-sm font-medium transition-colors ${
-                      isScrolled ? 'text-gray-700 hover:text-emerald-600' : 'text-white hover:text-emerald-200'
-                    } ${
-                      isHomeRoute && activeSection === item.sectionId ? 'text-emerald-600' : ''
-                    }`}
+                    className={`text-sm font-medium transition-colors ${isScrolled ? 'text-gray-700 hover:text-emerald-600' : 'text-white hover:text-emerald-200'
+                      } ${isHomeRoute && activeSection === item.sectionId ? 'text-emerald-600' : ''
+                      }`}
                   >
                     {item.label}
                   </button>
                 ) : (
                   <button
                     onClick={() => handlePageNav(item.to)}
-                    className={`text-sm font-medium transition-colors ${
-                      isScrolled ? 'text-gray-700 hover:text-emerald-600' : 'text-white hover:text-emerald-200'
-                    } ${
-                      location.pathname === item.to || item.matchPaths?.includes(location.pathname)
+                    className={`text-sm font-medium transition-colors ${isScrolled ? 'text-gray-700 hover:text-emerald-600' : 'text-white hover:text-emerald-200'
+                      } ${location.pathname === item.to || item.matchPaths?.includes(location.pathname)
                         ? 'text-emerald-600'
                         : ''
-                    }`}
+                      }`}
                   >
                     {item.label}
                   </button>
@@ -128,30 +124,28 @@ function Header({ activeSection, setActiveSection }: HeaderProps) {
               </div>
             ))}
             <Link
-              to="/join"
-              className={`text-sm font-semibold px-4 py-2 rounded-lg transition-all transform hover:scale-105 ${
-                isScrolled
-                  ? 'bg-emerald-600 text-white hover:bg-emerald-700'
-                  : 'bg-white text-emerald-700 hover:bg-emerald-50'
-              }`}
+              to={isMember ? "/loyalty-card" : "/join"}
+              className={`text-sm font-semibold px-4 py-2 rounded-lg transition-all transform hover:scale-105 ${isScrolled
+                ? 'bg-emerald-600 text-white hover:bg-emerald-700'
+                : 'bg-white text-emerald-700 hover:bg-emerald-50'
+                }`}
             >
-              Nous Rejoindre
+              {isMember ? "Carte Adhérent" : "Nous Rejoindre"}
             </Link>
           </nav>
 
           <div className="md:hidden flex items-center gap-2">
             <Link
-              to="/join"
+              to={isMember ? "/loyalty-card" : "/join"}
               className="text-sm font-semibold px-3 py-2 rounded-lg bg-emerald-600 text-white hover:bg-emerald-700 transition-all"
             >
-              Rejoindre
+              {isMember ? "Carte Adhérent" : "Rejoindre"}
             </Link>
             <button
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className={`md:hidden p-2 rounded-lg ${
-              isScrolled ? 'text-gray-900' : 'text-white'
-            }`}
-          >
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className={`md:hidden p-2 rounded-lg ${isScrolled ? 'text-gray-900' : 'text-white'
+                }`}
+            >
               {isMobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
             </button>
           </div>
@@ -166,22 +160,20 @@ function Header({ activeSection, setActiveSection }: HeaderProps) {
                 {item.type === 'section' ? (
                   <button
                     onClick={() => handleSectionNav(item.sectionId)}
-                    className={`block w-full text-left px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                      isHomeRoute && activeSection === item.sectionId
-                        ? 'bg-emerald-50 text-emerald-600'
-                        : 'text-gray-700 hover:bg-gray-50'
-                    }`}
+                    className={`block w-full text-left px-4 py-2 rounded-lg text-sm font-medium transition-colors ${isHomeRoute && activeSection === item.sectionId
+                      ? 'bg-emerald-50 text-emerald-600'
+                      : 'text-gray-700 hover:bg-gray-50'
+                      }`}
                   >
                     {item.label}
                   </button>
                 ) : (
                   <button
                     onClick={() => handlePageNav(item.to)}
-                    className={`block w-full text-left px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                      location.pathname === item.to || item.matchPaths?.includes(location.pathname)
-                        ? 'bg-emerald-50 text-emerald-600'
-                        : 'text-gray-700 hover:bg-gray-50'
-                    }`}
+                    className={`block w-full text-left px-4 py-2 rounded-lg text-sm font-medium transition-colors ${location.pathname === item.to || item.matchPaths?.includes(location.pathname)
+                      ? 'bg-emerald-50 text-emerald-600'
+                      : 'text-gray-700 hover:bg-gray-50'
+                      }`}
                   >
                     {item.label}
                   </button>
@@ -189,11 +181,11 @@ function Header({ activeSection, setActiveSection }: HeaderProps) {
               </div>
             ))}
             <Link
-              to="/join"
+              to={isMember ? "/loyalty-card" : "/join"}
               onClick={() => setIsMobileMenuOpen(false)}
               className="block w-full text-left px-4 py-2 rounded-lg text-sm font-semibold bg-emerald-50 text-emerald-600"
             >
-              Nous Rejoindre
+              {isMember ? "Carte Adhérent" : "Nous Rejoindre"}
             </Link>
           </nav>
         </div>

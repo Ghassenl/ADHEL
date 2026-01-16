@@ -1,8 +1,11 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Users, Heart, Zap, CheckCircle, Send, ArrowLeft, AlertCircle } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { setCookie, getCookie } from '../utils/cookieUtils';
 
 function JoinPage() {
+  const navigate = useNavigate();
+  /* State */
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -13,6 +16,14 @@ function JoinPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [usedEmailFallback, setUsedEmailFallback] = useState(false);
+
+  /* Check for existing session */
+  useEffect(() => {
+    const existingSession = getCookie('adhel_member');
+    if (existingSession) {
+      navigate('/loyalty-card');
+    }
+  }, [navigate]);
 
   const interests = [
     { id: 'events', label: 'Événements festifs', icon: '🎉' },
@@ -80,12 +91,25 @@ function JoinPage() {
       }
 
       setIsSubmitted(true);
+
+      // Generate membership data
+      const membershipId = Math.random().toString(36).substr(2, 9).toUpperCase();
+      const joinDate = new Date().toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
+
+      const submittedData = {
+        ...formData,
+        membershipId,
+        joinDate
+      };
+
+      // Save to cookie (simulating login)
+      setCookie('adhel_member', JSON.stringify(submittedData), 365); // Expires in 1 year
+
       setFormData({ name: '', email: '', phone: '', interests: [] });
 
       setTimeout(() => {
-        setIsSubmitted(false);
-        setUsedEmailFallback(false);
-      }, 6000);
+        navigate('/loyalty-card', { state: submittedData });
+      }, 1500);
     } catch (error) {
       console.error(error);
       setSubmitError(
@@ -213,11 +237,10 @@ function JoinPage() {
                     key={interest.id}
                     type="button"
                     onClick={() => handleInterestToggle(interest.id)}
-                    className={`p-4 rounded-xl border-2 transition-all transform hover:scale-105 cursor-pointer text-left ${
-                      formData.interests.includes(interest.id)
-                        ? 'border-emerald-500 bg-emerald-50'
-                        : 'border-gray-200 bg-white hover:border-emerald-300'
-                    }`}
+                    className={`p-4 rounded-xl border-2 transition-all transform hover:scale-105 cursor-pointer text-left ${formData.interests.includes(interest.id)
+                      ? 'border-emerald-500 bg-emerald-50'
+                      : 'border-gray-200 bg-white hover:border-emerald-300'
+                      }`}
                   >
                     <div className="text-2xl mb-2">{interest.icon}</div>
                     <div className="text-sm font-medium text-gray-900">{interest.label}</div>

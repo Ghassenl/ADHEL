@@ -1,10 +1,12 @@
 import { Calendar, Users, Heart, ChevronDown } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { getCookie } from '../utils/cookieUtils';
 
 function Hero() {
   const [isLoaded, setIsLoaded] = useState(false);
   const navigate = useNavigate();
+  const isMember = !!getCookie('adhel_member');
 
   useEffect(() => {
     setIsLoaded(true);
@@ -47,11 +49,11 @@ function Hero() {
 
           <div className={`flex flex-col sm:flex-row gap-4 justify-center mb-16 ${isLoaded ? 'animate-scale-in' : 'opacity-0'}`} style={isLoaded ? { animationDelay: '0.4s' } : {}}>
             <button
-              onClick={() => navigate('/join')}
+              onClick={() => navigate(isMember ? '/loyalty-card' : '/join')}
               className="group relative bg-white text-emerald-700 px-8 py-4 rounded-full font-semibold text-lg overflow-hidden transition-all transform hover:scale-110 shadow-2xl hover:shadow-3xl"
             >
               <div className="absolute inset-0 bg-gradient-to-r from-emerald-50 to-white opacity-0 group-hover:opacity-100 transition-opacity"></div>
-              <span className="relative">Nous Rejoindre</span>
+              <span className="relative">{isMember ? "Carte Adhérent" : "Nous Rejoindre"}</span>
             </button>
             <button
               onClick={() => {
